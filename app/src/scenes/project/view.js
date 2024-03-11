@@ -166,7 +166,7 @@ const Activities = ({ project }) => {
                 <thead>
                   <tr>
                     <th className="py-[10px] text-[14px] font-bold text-[#212325] text-left pl-[10px]">Users</th>
-                    {days.map((e) => {
+                    {days.map((e, i) => {
                       const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
                       const _date = new Date(e);
                       const day = _date.getDay();
@@ -175,7 +175,7 @@ const Activities = ({ project }) => {
                       return (
                         <th
                           className={`w-[20px] border border-[#E5EAEF] text-[12px] font-semibold text-center ${day == 0 || day == 6 ? "bg-[#FFD5F1]" : "bg-[white]"}`}
-                          key={e}
+                          key={i}
                           day={day}>
                           <div>{weekday}</div>
                           <div>{date}</div>
@@ -201,9 +201,9 @@ const Activities = ({ project }) => {
                   </tr>
                   {activities
                     .sort((a, b) => b.total - a.total)
-                    .map((e) => {
+                    .map((e, i) => {
                       return (
-                        <React.Fragment key={`${e.user}`}>
+                        <React.Fragment key={i}>
                           <tr className="border-t border-b border-r border-[#E5EAEF]" key={`1-${e._id}`}>
                             <th className="w-[100px] border-t border-b border-r text-[12px] font-bold text-[#212325] text-left">
                               <div className="flex flex-1 items-center justify-between gap-1 px-2">
@@ -218,8 +218,8 @@ const Activities = ({ project }) => {
                                 <div className="text-md italic font-normal">{(e.total / 8).toFixed(2)} days</div>
                               </div>
                             </th>
-                            {e.detail.map((f, j) => {
-                              return <Field key={`${e.user} ${j}`} value={f.value || 0} />;
+                            {e.detail.map((f, i) => {
+                              return <Field key={i} value={f.value || 0} />;
                             })}
                           </tr>
                         </React.Fragment>
@@ -273,8 +273,8 @@ const Links = ({ project }) => {
           </a>
         </div>
       )}
-      {project.links?.map((link) => (
-        <div className="group text-sm font-medium	text-blue-700 border-[1px] border-blue-700 rounded-full overflow-hidden">
+      {project.links?.map((link, i) => (
+        <div className="group text-sm font-medium	text-blue-700 border-[1px] border-blue-700 rounded-full overflow-hidden" key={i}>
           <a target="blank" href={link.url} className="break-words cursor-pointer text-blue-700 hover:text-white hover:bg-blue-700 flex hover:no-underline h-full">
             <div className="flex items-center bg-blue-700 py-1 px-2 rounded-r-full ">
               <IoIosLink className="group-hover:scale-110 text-white" />
