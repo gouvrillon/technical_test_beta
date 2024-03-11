@@ -5,6 +5,9 @@ import { useHistory } from "react-router-dom";
 import Loader from "../../components/loader";
 import LoadingButton from "../../components/loadingButton";
 import api from "../../services/api";
+import isEmpty from "lodash/isEmpty";
+import get from "lodash/get";
+import set from "lodash/set";
 
 const NewList = () => {
   const [users, setUsers] = useState(null);
@@ -110,6 +113,34 @@ const Create = () => {
                 email: "",
                 password: "",
               }}
+              validate={(values) => {
+                const errors = {};
+                if (isEmpty(get(values, "name"))) {
+                  set(errors, "name", "Obligatoire");
+                }
+                if (isEmpty(get(values, "email"))) {
+                  set(errors, "email", "Obligatoire");
+                }
+                if (!isEmpty(get(values, "email")) && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(get(values, "email"))) {
+                  set(errors, "email", "L'email est incorrect");
+                }
+                if (isEmpty(get(values, "password"))) {
+                  set(errors, "password", "Obligatoire");
+                }
+                if (!isEmpty(get(values, "password")) && get(values, "password", "").length < 8) {
+                  set(errors, "password", "Le mot de passe doit contenir au moins 8 caractères");
+                }
+                if (!isEmpty(get(values, "password")) && !/.*\d.*/.test(get(values, "password"))) {
+                  set(errors, "password", "Le mot de passe doit contenir au moins un chiffre");
+                }
+                if (!isEmpty(get(values, "password")) && !/.*[a-z].*/.test(get(values, "password"))) {
+                  set(errors, "password", "Le mot de passe doit contenir au moins une minuscule");
+                }
+                if (!isEmpty(get(values, "password")) && !/.*[A-Z].*/.test(get(values, "password"))) {
+                  set(errors, "password", "Le mot de passe doit contenir au moins une majuscule");
+                }
+                return errors;
+              }}
               onSubmit={async (values, { setSubmitting }) => {
                 try {
                   values.status = "active";
@@ -126,16 +157,18 @@ const Create = () => {
                 }
                 setSubmitting(false);
               }}>
-              {({ values, handleChange, handleSubmit, isSubmitting }) => (
+              {({ values, handleChange, handleSubmit, isSubmitting, errors, touched }) => (
                 <React.Fragment>
                   <div>
                     <div className="flex justify-between flex-wrap">
                       <div className="w-full md:w-[48%] mt-2">
                         <div className="text-[14px] text-[#212325] font-medium	">Name</div>
+                        {get(errors, "name") && get(touched, "name") && <div className="text-[14px] text-[#851111] font-medium	">{errors.name}</div>}
                         <input className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="name" value={values.name} onChange={handleChange} />
                       </div>
                       <div className="w-full md:w-[48%] mt-2">
                         <div className="text-[14px] text-[#212325] font-medium	">Email</div>
+                        {get(errors, "email") && get(touched, "email") && <div className="text-[14px] text-[#851111] font-medium	">{errors.email}</div>}
                         <input className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="email" value={values.email} onChange={handleChange} />
                       </div>
                     </div>
@@ -143,6 +176,7 @@ const Create = () => {
                       {/* Password */}
                       <div className="w-full md:w-[48%] mt-2">
                         <div className="text-[14px] text-[#212325] font-medium	">Password</div>
+                        {get(errors, "password") && get(touched, "password") && <div className="text-[14px] text-[#851111] font-medium	">{errors.password}</div>}
                         <input className="projectsInput text-[14px] font-normal text-[#212325] rounded-[10px]" name="password" value={values.password} onChange={handleChange} />
                       </div>
                     </div>
